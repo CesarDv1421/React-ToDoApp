@@ -1,0 +1,30 @@
+.editContainer {
+    border: solid 2px orange;
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 60vh;
+    margin: 90px auto;
+    padding: 30px;
+    border-radius:15px;
+    justify-content: space-between;
+    background-color: #22053e;
+}
+
+.editContainer > input {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.editContainer > input[name='description'] {
+    padding: 50px;
+}
+
+.inputsContainer {
+    display: flex;
+    justify-content: space-around;
+}
+
+.inputsContainer > * {
+    padding: 10px 20px;
+}

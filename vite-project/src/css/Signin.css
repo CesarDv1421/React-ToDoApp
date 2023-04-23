@@ -1,0 +1,19 @@
+.authForm {
+  border: solid 1px #ff2a00;
+  background-color: #11021f;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  padding: 50px;
+  width: 40%;
+  height: 70vh;
+  margin: 50px auto;
+  border-radius: 20px;
+}
+
+.authForm > input {
+  padding: 10px;
+  border-radius: 10px;
+}

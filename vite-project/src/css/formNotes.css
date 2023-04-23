@@ -1,0 +1,181 @@
+.dasContainer {
+  display: flex;
+  width: 100vw;
+  height: 84.5vh;
+}
+  
+.bn9 {
+  padding: 2px;
+  outline: 0;
+  font-size: 17px;
+  color: rgb(0, 0, 0);
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#fdde5c),
+    color-stop(#f8ab5e),
+    color-stop(#f56a62),
+    color-stop(#a176c8),
+    color-stop(#759beb),
+    color-stop(#65beb3),
+    to(#70db96)
+  );
+  background: linear-gradient(
+    to right,
+    #fdde5c,
+    #f8ab5e,
+    #f56a62,
+    #a176c8,
+    #759beb,
+    #65beb3,
+    #70db96
+  );
+  border-radius: 30px;
+  border: 0;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.bn9 > span {
+  display: block;
+  padding: 10px 40px;
+  font-size: 17px;
+  font-weight: 500;
+  background: #ebebeb;
+  border-radius: 30px;
+}
+
+.button-77 {
+  align-items: center;
+  background-color: initial;
+  border-style: none;
+  color: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 0;
+}
+
+.button-77 {
+  padding: 10px 15px;
+}
+
+.button-77:before,
+.button-77:after {
+  border-radius: 80px;
+}
+
+.button-77:before {
+  background-color: rgba(249, 58, 19, 0.32);
+  content: "";
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -2;
+}
+
+.button-77:after {
+  background-color: initial;
+  background-image: linear-gradient(92.83deg, #29ac4c 0, #36fb00 100%);
+  bottom: 4px;
+  content: "";
+  display: block;
+  left: 4px;
+  overflow: hidden;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  transition: all 100ms ease-out;
+  z-index: -1;
+}
+
+.delete:after {
+  background-image: linear-gradient(92.83deg, #ff0000 0, #ff8c00 100%);
+}
+
+.button-77:hover:not(:disabled):after {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  transition-timing-function: ease-in;
+}
+
+.button-77:active:not(:disabled):after {
+  background-image: linear-gradient(92.83deg, #29ac4c 0, #36fb00 100%);
+  bottom: 4px;
+  left: 4px;
+  right: 4px;
+  top: 4px;
+}
+
+.delete:active:not(:disabled):after {
+  background-image: linear-gradient(92.83deg, #ff0000 0, #ff8c00 100%);
+}
+
+.button-77:disabled {
+  cursor: default;
+  opacity: 0.24;
+}
+
+.formDB {
+  color: white;
+  border: solid 2px #ff2a00;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+  margin: 25px;
+  border-radius: 15px;
+  padding: 20px 30px;
+  background-color: #11021f;
+}
+
+.formDB > input {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.formDB > input[type="submit"] {
+  background-color: #0048ff;
+}
+
+.formDB > textarea {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.notesContainer {
+  color: white;
+  border: solid 2px #ff2a00;
+  margin: 25px;
+  width: 100vw;
+  border-radius: 15px;
+  background-color: #11021f;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.note {
+  border: solid 2px #f0f0f0;
+  background-color: #22053e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: space-around;
+  width: 20%;
+  height: 235px;
+  margin: 20px;
+  border-radius: 10px;
+}
+
+.note > div {
+  width: 80%;
+  display: flex;
+  justify-content:space-evenly ;
+}
