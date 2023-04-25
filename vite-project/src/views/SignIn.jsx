@@ -2,7 +2,7 @@ import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 import "../css/Signin.css";
 
-function SignIn() {
+function SignIn({auth}) {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -16,13 +16,16 @@ function SignIn() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    const { status, token, errors } = await response.json();
+    const { status, token, errors,  message } = await response.json();
 
     localStorage.setItem("token", token);
 
-    console.log(token, status, errors);
+    console.log(token, status, errors, message);
 
-    if (status === 201) navigate("/home", { replace: true });
+    if (status === 201 && token !== undefined && token !== null && token !== "undefined" && token !== "" ) {
+      navigate("/home", { replace: true });
+      auth(true)
+    }
   };
 
   return (

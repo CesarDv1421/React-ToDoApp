@@ -17,14 +17,14 @@ function NavBar() {
               <Link to="/home">Home</Link>
             </li>
             <li>
-              <Link to="/auth/signin">Sign In</Link>
+              <Link to="/auth/signin" onClick={()=> localStorage.removeItem('token')}>Sign In</Link>
             </li>
             <li>
-              <Link to="/auth/signup">Sign Up</Link>
+              <Link to="/auth/signup" onClick={()=> localStorage.removeItem('token')}>Sign Up</Link>
             </li>
           </div>
           <li>
-            <Link to="/asdasd">404 NOT FOUND</Link>
+            <Link to="/auth/signin" onClick={()=> localStorage.removeItem('token')}>Log out</Link>
           </li>
         </ul>
       </nav>

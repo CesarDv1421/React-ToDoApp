@@ -1,16 +1,29 @@
 import NavBar from "../components/NavBar";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import '../css/HomeEdit.css'
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import "../css/HomeEdit.css";
 
 function HomeEdit() {
-  const { state } = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  const [formData, setFormData] = useState({
-    title: state.title,
-    description: state.description,
-  });
+  const [formData, setFormData] = useState({ title: "", description: "" });
+
+  useEffect(() => {
+    //Mostrar datos previos de la nota
+    const showNote = async () => {
+      const response = await fetch(`http://localhost:3000/home/edit/${id}`, {
+        method: "PATCH",
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const { title, description } = await response.json();
+
+      setFormData({ title, description });
+    };
+    showNote();
+  }, []);
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -19,17 +32,23 @@ function HomeEdit() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    await fetch("http://localhost:3000/home/edit", {
+    const formData = new FormData(event.target);
+    const { title, description } = Object.fromEntries(formData);
+
+    //Actualizar datos de la nota
+    await fetch(`http://localhost:3000/home/edit/${id}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...formData, id: state.id }),
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ title, description }),
     });
     navigate("/home");
   };
 
   return (
     <>
-    
       <NavBar />
 
       <form className="editContainer" onSubmit={handleSubmit}>
@@ -43,14 +62,13 @@ function HomeEdit() {
         <textarea
           type="text"
           name="description"
-          cols='20'
-          rows='9'
+          cols="20"
+          rows="13"
           value={formData.description}
           onChange={handleChange}
         />
 
         <div className="inputsContainer">
-
           <button
             type="button"
             className="button-77 delete"

@@ -13,8 +13,12 @@ app.use(urlencoded({ extended: false }));
 import home from "./routes/index.routes.js";
 import auth from "./routes/auth.routes.js";
 
+//middlewares
+import validateToken from './middleware/isAuthenticated.js'
+
 
 app.use("/auth", auth);
+app.use(validateToken)
 app.use("/home", home);
 
 app.listen(3000, () => {

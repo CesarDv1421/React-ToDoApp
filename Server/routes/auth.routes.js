@@ -31,11 +31,12 @@ auth.post("/signup",[
     return res.status(400).json({ errors: errors.array(), valores, validaciones });
   }
 
-
   const { name, email, password } = req.body;
 
   const [userExist] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
   
+  console.log(userExist)
+
   //Validando si ya existe un usuario con el mismo email
   if (userExist.length !== 0) return res.status(404).json({ message: "El usuario ya existe" });
 
@@ -74,7 +75,7 @@ auth.post("/signin",[
 
   //Validando que el email exista en la base de datos
   const [user] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-  
+
   if (user.length > 0) {
     //Comparando contraseñas
     const passwordMatch = await encrypt.matchPassword(password, user[0].password);
@@ -84,8 +85,8 @@ auth.post("/signin",[
       //Creando token
       const token = Jwt.sign({ userId }, process.env.SECRET, {expiresIn: "24h"});
 
-      //Enviando json con el token y datos del usuario
-      return res.status(201).json({token, user, status : res.statusCode, message : res.statusMessage});
+      //Enviando token, codigos y mensajes 
+      return res.status(201).json({token, status : res.statusCode, message : res.statusMessage});
     }
 
     return res.status(400).json({ message: "Contrasena incorrecta" });

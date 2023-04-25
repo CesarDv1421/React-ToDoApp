@@ -3,29 +3,31 @@ import Notes from "../components/Notes";
 import NavBar from "../components/NavBar";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/formNotes.css";
+import { format } from "timeago.js";
 
 function Dashboard() {
   const [users, setUsers] = useState(null);
   const navigate = useNavigate();
 
+  const fetcher = async () => {
+    const response = await fetch("http://localhost:3000/home", {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const jsonData = await response.json();
+
+    setUsers(jsonData);
+
+    if (jsonData.status === 401) return navigate("/auth/signin");
+  };
+
   useEffect(() => {
-    const fetcher = async () => {
-      const response = await fetch("http://localhost:3000/home", {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const jsonData = await response.json();
-
-      setUsers(jsonData);
-
-      if (jsonData.status === 401) return navigate("/auth/signin");
-    };
     fetcher();
-  }, [localStorage.getItem("token")]);
+  }, []);
 
-  const handleSubmit = async (event) => {
+  const createNote = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.target);
@@ -46,26 +48,30 @@ function Dashboard() {
     setUsers((prevUsers) => {
       return prevUsers ? [...prevUsers, newNote] : [newNote];
     });
+    fetcher();
   };
 
   const deleteNote = async (id) => {
-    await fetch(`http://localhost:3000/home/${id}`, { method: "DELETE" });
-    const filteredNotes = users.filter((note) => note.id !== id);
-    setUsers(filteredNotes);
+    console.log(id, "dentro de deletenote");
+    await fetch(`http://localhost:3000/home/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    setUsers((prevUsers) => {
+      return prevUsers.filter((note) => note.id !== id);
+    });
   };
-
-  // const patchNote = async (id) => {
-  //   await fetch(`http://localhost:3000/home/${id}`, { method: "PATCH" });
-  // }
-
-  console.log(users);
 
   return (
     <>
       <NavBar />
 
       <div className="dasContainer">
-        <form className="formDB" onSubmit={handleSubmit}>
+        <form className="formDB" onSubmit={createNote}>
           <span>Create a Note</span>
 
           <input type="text" name="title" />
@@ -79,28 +85,23 @@ function Dashboard() {
 
         <div className="notesContainer">
           {users &&
-            users.map(({ title, description, id }, index) => {
+            users.map(({ title, description, id, created_at }, index) => {
               return (
                 <Notes
                   key={index}
                   id={id}
                   title={title}
                   description={description}
-                  date="hoy xd"
+                  date={format(created_at)}
                 >
-                  <Link to="/home/edit" state={{ title, description, id }}>
+                  <Link to={`/home/edit/${id}`}>
                     <button className="button-77" role="button">
                       Editar
                     </button>
                   </Link>
 
-                  {/* <button className="button-77" onClick={()=> patchNote(id)}>
-                    Editar
-                  </button> */}
-
                   <button
                     className="button-77 delete"
-                    role="button"
                     onClick={() => deleteNote(id)}
                   >
                     Eliminar
