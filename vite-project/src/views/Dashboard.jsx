@@ -74,9 +74,9 @@ function Dashboard() {
         <form className="formDB" onSubmit={createNote}>
           <span>Create a Note</span>
 
-          <input type="text" name="title" />
+          <input type="text" name="title" placeholder="Titulo" />
 
-          <textarea name="description" id="" cols="20" rows="8"></textarea>
+          <textarea name="description" id="" cols="20" rows="8" placeholder="Descripcion"></textarea>
 
           <button type="submit" className="bn9">
             <span>Create Note</span>
