@@ -1,5 +1,5 @@
 import NavBar from "../components/NavBar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp({ auth }) {
   const navigate = useNavigate();
@@ -10,8 +10,6 @@ function SignUp({ auth }) {
     const formData = new FormData(event.target);
     const { name, email, password } = Object.fromEntries(formData);
 
-    console.log(name, email, password)
-
     const response = await fetch("http://localhost:3000/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -19,13 +17,10 @@ function SignUp({ auth }) {
     });
     const { token, status, message } = await response.json();
 
-    console.log(response)
-
     localStorage.setItem("token", token);
     
-    console.log(message)
-
-    if (status === 200 && token !== undefined && token !== null && token !== "undefined" && token !== "" ) {
+    if (status === 200 
+      && token !== undefined && token !== null && token !== "undefined" && token !== "" ) {
       navigate("/auth/signin", { replace: true });
       auth(true)
     }
@@ -40,7 +35,10 @@ function SignUp({ auth }) {
           <input type="text" name="name" placeholder="Nombre" />
           <input type="email" name="email" placeholder="Email" />
           <input type="password" name="password" placeholder="password" />
-          <input type="submit" value="Registrate" />
+          <p>Ya tienes Cuenta? <Link to='/auth/signin'>Inicia Sesion</Link></p>
+          <button type="submit" className="button-77" style={{padding : '16px'}}>
+            Registrate
+          </button>
         </form>
       </div>
     </>

@@ -8,13 +8,18 @@ import SignIn from "./views/SignIn.jsx";
 import SignUp from "./views/SignUp.jsx";
 import NotFound from "./views/NotFound.jsx";
 import HomeEdit from "./views/HomeEdit.jsx";
+import Index from "./views/Index.jsx";
 
 function App() {
+
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
+
+  console.log(isAuthenticated)
 
   return (
       <Routes>
         <Route path="*" element={<NotFound />} />
+        <Route path="/" element={<Index />} />
         <Route path="/auth/signup" element={<SignUp auth={setIsAuthenticated} />} />
         <Route path="/auth/signin" element={<SignIn auth={setIsAuthenticated} />} />
         <Route path="/home" element={isAuthenticated ? <Dashboard /> : <Navigate to="/auth/signin" />}/>

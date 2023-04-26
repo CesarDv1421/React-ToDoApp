@@ -95,7 +95,7 @@ function Dashboard() {
                   date={format(created_at)}
                 >
                   <Link to={`/home/edit/${id}`}>
-                    <button className="button-77" role="button">
+                    <button className="button-77">
                       Editar
                     </button>
                   </Link>

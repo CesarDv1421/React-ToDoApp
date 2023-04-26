@@ -1,8 +1,8 @@
 import NavBar from "../components/NavBar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/Signin.css";
 
-function SignIn({auth}) {
+function SignIn({ auth }) {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -16,15 +16,21 @@ function SignIn({auth}) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    const { status, token, errors,  message } = await response.json();
+    const { status, token, errors, message } = await response.json();
 
     localStorage.setItem("token", token);
 
     console.log(token, status, errors, message);
 
-    if (status === 201 && token !== undefined && token !== null && token !== "undefined" && token !== "" ) {
+    if (
+      status === 201 &&
+      token !== undefined &&
+      token !== null &&
+      token !== "undefined" &&
+      token !== ""
+    ) {
       navigate("/home", { replace: true });
-      auth(true)
+      auth(true);
     }
   };
 
@@ -37,7 +43,16 @@ function SignIn({auth}) {
 
           <input type="email" name="email" placeholder="Email" />
           <input type="password" name="password" placeholder="password" />
-          <input type="submit" value="Iniciar Sesion" />
+          <p>
+            No estas registrado? <Link to="/auth/signup">REGISTRATE</Link>
+          </p>
+          <button
+            type="submit"
+            className="button-77"
+            style={{ padding: "16px" }}
+          >
+            Iniciar Sesion
+          </button>
         </form>
       </div>
     </>
