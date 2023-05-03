@@ -60,15 +60,15 @@ const useCrudNotes = () => {
 
       setMessage((prevState) => ({
         ...prevState,
-        show: true,
-        error: "El titulo es requerido",
+        show: true, //Se muestra el error
+        error: "El titulo es requerido", //El mensaje del error 
       }));      
 
       setTimeout(() => {
         setMessage((prevState) => ({
           ...prevState,
           show: false,
-          error: "",
+          error: "", //Se resetea el mensaje de error despues de 2350ms
           debounced: false,
         }));        
       }, 2350);
@@ -105,7 +105,7 @@ const useCrudNotes = () => {
 
       setMessage((prevState) => ({
         ...prevState,
-        show: true,
+        show: true, //Se muestra el error con el mensaje
         error: "Ha ocurrido un error al crear la nota. Por favor, inténtelo de nuevo más tarde.",
       }));     
 
@@ -115,7 +115,7 @@ const useCrudNotes = () => {
         setMessage((prevState) => ({
           ...prevState,
           show: false,
-          error: "",
+          error: "", //Se resetea el mensaje de error
           debounced: false
         }));
       }, 2350);

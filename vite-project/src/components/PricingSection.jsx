@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 const PricingSection = ({ title, description, price, className, children }) => {
   return (
     <>
-      <div className={`pricingContent ${className} `}>
+      <div className={`pricingContent ${className}`}>
+
         {children}
 
         <h2 className="pricingTitle">{title}</h2>
@@ -16,11 +17,11 @@ const PricingSection = ({ title, description, price, className, children }) => {
           description.map(({ one, two, three, four, five }, index) => {
             return (
               <ul className="description" key={index}>
-                <li> ● {one} </li>
-                <li> ● {two} </li>
-                <li> ● {three} </li>
-                <li> ● {four} </li>
-                <li> ● {five} </li>
+                <li> {one} </li>
+                <li> {two} </li>
+                <li> {three} </li>
+                <li> {four} </li>
+                <li> {five} </li>
               </ul>
             );
           })}

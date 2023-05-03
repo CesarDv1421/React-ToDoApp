@@ -16,7 +16,7 @@ const useSignin = (auth) => {
       setErrorMessage((prevState) => ({
         ...prevState,
         show: false,
-        error: "",
+        error: "", /// Se resetea el mensaje de error despues de 2350ms
         debounced: false,
       }));
     }, 2350);
@@ -28,7 +28,7 @@ const useSignin = (auth) => {
 
     if (errorMessage.debounced) return;
 
-    setErrorMessage((prevState) => ({ ...prevState, error: "" }));
+    setErrorMessage((prevState) => ({ ...prevState, error: "" })); //Setea el mensaje de error para evitar mostrar mensajes no correspondientes al error
 
     const formData = new FormData(event.target);
     const { email, password } = Object.fromEntries(formData);
@@ -36,24 +36,27 @@ const useSignin = (auth) => {
     if (!email && !password) {
       validateAndShow();
       return setErrorMessage((prevState) => ({
-        ...prevState,
+        ...prevState, //Muestra el mensaje de error
         error: "Ingrese un email y una contraseña",
       }));
     }
     if (!email) {
       validateAndShow();
-      return setErrorMessage((prevState) => ({ ...prevState, error: "Ingrese un email" }));
+      return setErrorMessage((prevState) => ({
+        ...prevState,//Muestra el mensaje de error
+        error: "Ingrese un email",
+      }));
     }
     if (!password) {
       validateAndShow();
       return setErrorMessage((prevState) => ({
-        ...prevState,
+        ...prevState,//Muestra el mensaje de error
         error: "Ingrese una contraseña",
       }));
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/signin", {
+      const response = await fetch("http://localhost:3000/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -64,12 +67,13 @@ const useSignin = (auth) => {
       localStorage.setItem("userName", userName);
 
       if (error) {
+        
         localStorage.removeItem("token");
         localStorage.removeItem("userName");
 
         setErrorMessage((prevState) => ({
           ...prevState,
-          show: true,
+          show: true, //Muestra el mensaje de error segun lo que responde el Backend
           error: error,
         }));
 
@@ -77,7 +81,7 @@ const useSignin = (auth) => {
           setErrorMessage((prevState) => ({
             ...prevState,
             show: false,
-            error: "",
+            error: "",//Resetea el mensaje de error
             debounced: false,
           }));
         }, 2350);
@@ -91,20 +95,20 @@ const useSignin = (auth) => {
         navigate("/notes");
       }
     } catch (err) {
-      
       console.log(err);
 
       setErrorMessage((prevState) => ({
         ...prevState,
         show: true,
-        error: "Ha ocurrido un error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.",
+        error: //Muestra el mensaje de error
+          "Ha ocurrido un error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.",
       }));
 
       setTimeout(() => {
         setErrorMessage((prevState) => ({
           ...prevState,
           show: false,
-          error: "",
+          error: "", //Resetea el mensaje de error
           debounced: false,
         }));
       }, 2350);
