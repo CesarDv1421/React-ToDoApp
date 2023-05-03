@@ -4,7 +4,7 @@ import { body, validationResult } from "express-validator";
 
 const router = Router();
 
-router.get("/notes", async (req, res) => {
+router.get("/", async (req, res) => {
   
   try {
 
@@ -18,7 +18,7 @@ router.get("/notes", async (req, res) => {
   }
 });
 
-router.post("/notes",[
+router.post("/",[
 
   body("title")
   
@@ -48,7 +48,7 @@ router.post("/notes",[
   }
 );
 
-router.put("/notes/:id",[
+router.put("/:id",[
 
     body("title")
       .notEmpty()
@@ -79,7 +79,7 @@ router.put("/notes/:id",[
   }
 );
 
-router.delete("/notes/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 

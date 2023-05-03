@@ -2,10 +2,10 @@ import mysql from "mysql2/promise";
 
 //Conectar credenciales con la DB
 const pool = mysql.createPool({
-  host: process.env.example.DB_HOST,
-  user: process.env.example.DB_USER,
-  password: process.env.example.DB_PASSWORD,
-  database: process.env.example.DB_NAME,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 pool.getConnection((err, conection) => {
