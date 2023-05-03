@@ -1,24 +1,22 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 const encrypt = {};
 
-encrypt.encryptPassword = async (password) => {
-
+encrypt.encryptPassword = async (res, password) => {
+  try {
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-    return hash
-}
+    return await bcrypt.hash(password, salt);
+  } catch (err) {
+    res.status(500).json({error : err.message})
+  }
+};
 
-encrypt.matchPassword = async (password, encryptedPassword) => {
+encrypt.matchPassword = async (res, password, encryptedPassword) => {
+  try {
+    return await bcrypt.compare(password, encryptedPassword);
+  } catch (err) {
+    res.status(500).json({error : err.message})
+  }
+};
 
-    try {
-        //Compara la contrasena escrita por el usuario con la contrasena en la base de datos (encriptada)
-        return await bcrypt.compare(password, encryptedPassword)
-    }
-    catch (e) {
-        console.log(e)
-    }
-
-}
-
-export default encrypt
+export default encrypt;

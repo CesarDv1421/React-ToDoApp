@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 30px 100px;
+  margin: 30px 125px;
 }
 
 .navLinksContainer {
@@ -11,12 +11,7 @@
   gap: 50px;
 }
 
-.navLinksContainer >  {
-  border: solid 0px black;
-  padding: 15px 30px;
-  border-radius: 10px;
-  border: solid 2px white;
-}
+
 
 .navLinksContainer > a[href="/auth/signin"] {
   background: rgb(19, 15, 64);
@@ -64,6 +59,7 @@
 
 .focusIndex > h3 {
   color: white;
+  margin: 0 50px;
 }
 
 .button-41 {
@@ -121,7 +117,6 @@
 }
 
 .mostPopular {
-  background: rgb(19, 15, 64);
   background: linear-gradient(
     60deg,
     rgba(19, 15, 64, 1) 0%,
@@ -131,6 +126,7 @@
   height: 650px;
   padding: 50px 70px;
 }
+
 .mostPopular > div {
   font-size: 25px;
   font-weight: 900;
@@ -165,5 +161,9 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 50px 200px;
+  padding: 50px 300px;
+}
+
+.technologies > * {
+  margin: 0 20px;
 }

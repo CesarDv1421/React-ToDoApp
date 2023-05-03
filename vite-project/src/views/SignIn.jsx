@@ -1,51 +1,45 @@
-import NavBar from "../components/NavBar";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../css/Signin.css";
+//Componentes
+import NavBar from "../components/NavBar";
+import Message from "../components/errorMessage";
+//Hooks
+import useSignin from "../hooks/useSignin";
 
 function SignIn({ auth }) {
-  const navigate = useNavigate();
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.target);
-    const { email, password } = Object.fromEntries(formData);
-
-    const response = await fetch("http://localhost:3000/auth/signin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const { status, token, errors, message } = await response.json();
-
-    localStorage.setItem("token", token);
-
-    console.log(token, status, errors, message);
-
-    if (
-      status === 201 &&
-      token !== undefined &&
-      token !== null &&
-      token !== "undefined" &&
-      token !== ""
-    ) {
-      navigate("/home", { replace: true });
-      auth(true);
-    }
-  };
+  
+  const { errorMessage, handleSubmit } = useSignin(auth);
 
   return (
     <>
-      <NavBar />
+      <NavBar>
+        <div>
+          <li>
+            <Link to="/auth/signin">Iniciar Sesion</Link>
+          </li>
+          <li>
+            <Link to="/auth/signup">Registrate</Link>
+          </li>
+        </div>
+      </NavBar>
       <div>
         <form onSubmit={handleSubmit} className="authForm">
           <h1>Iniciar Sesion</h1>
-
           <input type="email" name="email" placeholder="Email" />
           <input type="password" name="password" placeholder="password" />
-          <p>
-            No estas registrado? <Link to="/auth/signup">REGISTRATE</Link>
-          </p>
+          {errorMessage.show ? (
+            <Message message={errorMessage.error} />
+          ) : (
+            <p className="registred">
+              ¿No estas registrado? {" "}
+              <Link
+                to="/auth/signup"
+                style={{ color: "blue", borderBottom: "solid 2px blue" }}
+              >
+                Registrate
+              </Link>
+            </p>
+          )}
           <button
             type="submit"
             className="button-77"

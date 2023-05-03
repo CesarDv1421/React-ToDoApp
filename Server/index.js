@@ -2,25 +2,29 @@ import express, { urlencoded } from "express";
 const app = express();
 import cors from "cors";
 import dotenv from "dotenv";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+dotenv.config({ path: join(__dirname, './.env') })
 app.use(cors());
 app.use(express.json());
 app.use(express.text());
 app.use(urlencoded({ extended: false }));
 
 //routes
-import home from "./routes/index.routes.js";
+import notes from "./routes/notes.routes.js";
 import auth from "./routes/auth.routes.js";
 
 //middlewares
 import validateToken from './middleware/isAuthenticated.js'
 
 
-app.use("/auth", auth);
+app.use("/api", auth);
 app.use(validateToken)
-app.use("/home", home);
+app.use("/api", notes);
 
-app.listen(3000, () => {
-  console.log("Server Listen in the port 3000");
+app.listen(process.env.PORT, () => {
+  console.log("Server Listen in the port " + process.env.PORT);
 });

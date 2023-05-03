@@ -1,33 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logoCode from '/Logo code.png'
-import { BiHomeAlt2, BiLogIn, BiLogOut } from "react-icons/bi";
-import { BsDatabaseAdd } from  "react-icons/bs";
+import logoCode from "/Logo code.png";
 
-function NavBar() {
+function NavBar({ children }) {
   return (
     <>
       <nav>
         <ul className="navContainer">
           <li>
             <Link to="/">
-              <img className="logoCode" src={logoCode} alt="" />
+              <img className="logoCode" src={logoCode} />
             </Link>
           </li>
-          <div>
-            <li>
-              <Link to="/home"><BiHomeAlt2/></Link>
-            </li>
-            <li>
-              <Link to="/auth/signin" onClick={()=> localStorage.removeItem('token')}><BiLogIn/></Link>
-            </li>
-            <li>
-              <Link to="/auth/signup" onClick={()=> localStorage.removeItem('token')}><BsDatabaseAdd/></Link>
-            </li>
-          </div>
-          <li>
-            <Link to="/auth/signin" onClick={()=> localStorage.removeItem('token')}><BiLogOut/></Link>
-          </li>
+          {children}
         </ul>
       </nav>
     </>
@@ -35,3 +20,17 @@ function NavBar() {
 }
 
 export default NavBar;
+/*<div>
+            <li>
+              <Link to="/notes"><BiHomeAlt2/></Link>
+            </li>
+            <li>
+              <Link to="/auth/signin"><BiLogIn/></Link>
+            </li>
+            <li>
+              <Link to="/auth/signup"><BsDatabaseAdd/></Link>
+            </li>
+          </div>
+          <li>
+            <Link to="/auth/signin" onClick={()=> localStorage.removeItem('token')}><BiLogOut/></Link>
+          </li>*/

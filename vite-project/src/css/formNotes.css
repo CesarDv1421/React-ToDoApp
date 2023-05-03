@@ -93,6 +93,50 @@
   z-index: -1;
 }
 
+.loading-circle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 5px;
+}
+
+.loading-circle {
+  border: 4px solid white;
+  border-top: 4px solid #130f40;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+.show {
+  width: 100%;
+}
+
+.show > * {
+  border: 8px solid white;
+  border-top: 8px solid #130f40;
+  width: 100px;
+  height: 100px;
+}
+
+.deleteButtonContainer {
+  padding: 0px 20px;
+}
+
+.deleteButton {
+  border: 2px solid white;
+  border-top: 2px solid #130f40;
+  width: 10px;
+  height: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .delete:after {
   background-image: linear-gradient(92.83deg, #ff0000 0, #ff8c00 100%);
 }
@@ -168,7 +212,7 @@
   align-items: center;
   text-align: center;
   justify-content: space-around;
-  width: 20%;
+  width: 21.5%;
   height: 235px;
   margin: 20px;
   border-radius: 10px;

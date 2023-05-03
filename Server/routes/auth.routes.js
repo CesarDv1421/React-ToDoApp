@@ -2,97 +2,99 @@ import { Router } from "express";
 import pool from "../DB.js";
 import { body, validationResult } from "express-validator";
 import encrypt from "../helpers/bcrypt.js";
-import Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
-const auth = Router();
+const router = Router();
 
-auth.post("/signup",[
+router.post("/signup", [
 
-  body('name', 'Rellene el campo requerido')
-      .not().isEmpty(),
+  body("email")
+    .isEmail()
+    .withMessage("Ingrese el formato correcto"),
 
-  body('email', 'ingrese el formato correcto')
-      .not().isEmpty()
-      .isEmail(),
-
-  body('password', 'Ingrese una contraseña')
-      .not().isEmpty()
-      .isLength({ min: 8 })
-
-], async (req, res) => {
-
-  //Validar errores desde express-validator
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-
-    const valores = req.body;
-    const validaciones = errors.array();
-
-    return res.status(400).json({ errors: errors.array(), valores, validaciones });
-  }
-
-  const { name, email, password } = req.body;
-
-  const [userExist] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+  body("password")
+    .isStrongPassword()
+    .withMessage("La contraseña debe tener AL MENOS 8 caracteres, 1 caracter en mayuscula, 1 en minuscula, 1 numero y 1 caracter especial"),
   
-  console.log(userExist)
+  ], async (req, res) => {
+    //Validar errores desde express-validator
+    const errors = validationResult(req);
+    console.log(errors.array())
+    const error = errors.array()  
+    if (!errors.isEmpty()) return res.status(400).json({ error : error[0].msg });
+    
+    try {
 
-  //Validando si ya existe un usuario con el mismo email
-  if (userExist.length !== 0) return res.status(404).json({ message: "El usuario ya existe" });
+      const { name, email, password } = req.body;
 
-  //Encriptando contrasena en la base de datos
-  const encriptedPassword = await encrypt.encryptPassword(password);
-  await pool.query("INSERT INTO users SET ?", [{ name, email, password: encriptedPassword }]);
+      await pool.query("USE db;")
+      
+      const [userExist] = await pool.query("SELECT * FROM users WHERE email = ?",[email]);
 
-  //Creando token
-  const token = Jwt.sign({ email }, process.env.SECRET, { expiresIn: "10m" });
+      //Validando si ya existe un usuario con el mismo email
+      if (userExist.length !== 0) return res.status(404).json({ error: "El usuario ya existe" });
+  
+      //Encriptando contrasena en la base de datos
+      const encriptedPassword = await encrypt.encryptPassword(res, password);
+      await pool.query("INSERT INTO users SET ?", [{ name, email, password: encriptedPassword }]);
 
-  return res.status(200).json({ token, status: res.statusCode ,message: res.statusMessage });
-});
+      const [user] = await pool.query("SELECT * FROM users WHERE email = ?",[email]);
+      
+      //Creando token
+      const token = jwt.sign({ userId : user[0].id }, process.env.SECRET, { expiresIn: "10m" });
+  
+      return res.status(201).json({ token, userName: user[0].name });
 
-auth.post("/signin",[
+     } catch(err) {
+       res.status(500).json({error : err.message})
+    }
+  }
+);
 
-  body('email', 'ingrese el formato correcto')
-      .not().isEmpty()
-      .exists()
-      .isEmail(),
-
-  body('password', 'Ingrese una contraseña')
-      .not().isEmpty()
-      .exists()
-      .isLength({ min: 8 })
-
+router.post("/signin",[
+  
+  body("email").isEmail().withMessage("Ingrese el formato correcto"),
+  
 ], async (req, res) => {
-
-  const errors = validationResult(req);
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+      return res.status(400).json({ errors: errors.array() });
       /*const valores = req.body;
       const validaciones = errors.array();*/
     }
+    
+    try {
+      
+      const { email, password } = req.body;
+      
+      await pool.query("USE db;")
 
-  const { email, password } = req.body;
+      //Validando que el email exista en la base de datos
+      const [userExist] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
 
-  //Validando que el email exista en la base de datos
-  const [user] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+    if (userExist.length > 0) {
+      //Comparando contraseñas
+      const passwordMatch = await encrypt.matchPassword(res, password, userExist[0].password);
 
-  if (user.length > 0) {
-    //Comparando contraseñas
-    const passwordMatch = await encrypt.matchPassword(password, user[0].password);
-    if (passwordMatch) {
-      const userId = user[0].id;
+      if (passwordMatch) {
+        const userId = userExist[0].id;
 
-      //Creando token
-      const token = Jwt.sign({ userId }, process.env.SECRET, {expiresIn: "24h"});
+        //Creando token
+        const token = jwt.sign({ userId }, process.env.SECRET, {expiresIn: "30m"});
 
-      //Enviando token, codigos y mensajes 
-      return res.status(201).json({token, status : res.statusCode, message : res.statusMessage});
+        //Enviando token, codigos y mensajes
+        return res.status(201).json({ token, userName: userExist[0].name });
+      }
+
+      return res.status(400).json({ error: "Contrasena incorrecta" });
     }
 
-    return res.status(400).json({ message: "Contrasena incorrecta" });
+    return res.status(400).json({ error: "El usuario no existe" });
+    
+  } catch(err) {
+    res.status(500).json({error : err.message})
+  }   
   }
+);
 
-  return res.status(400).json({ message: "El usuario no existe" });
-});
-
-export default auth;
+export default router;

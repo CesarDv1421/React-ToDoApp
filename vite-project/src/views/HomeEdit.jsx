@@ -1,61 +1,71 @@
 import NavBar from "../components/NavBar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../css/HomeEdit.css";
 
 function HomeEdit() {
+  const [dataNote, setDataNote] = useState({ title: "", description: "" });
   const navigate = useNavigate();
-  const { id } = useParams();
-
-  const [formData, setFormData] = useState({ title: "", description: "" });
+  const location = useLocation();
+  const { id, notes } = location.state;
 
   useEffect(() => {
     //Mostrar datos previos de la nota
-    const showNote = async () => {
-      const response = await fetch(`http://localhost:3000/home/edit/${id}`, {
-        method: "PATCH",
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const { title, description } = await response.json();
-
-      setFormData({ title, description });
-    };
-    showNote();
+    const [note] = notes.filter((note) => note.id === id);
+    setDataNote({ title: note.title, description: note.description });
   }, []);
 
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    //
+    setDataNote({ ...dataNote, [event.target.name]: event.target.value });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.target);
-    const { title, description } = Object.fromEntries(formData);
+    const dataNote = new FormData(event.target);
+    const { title, description } = Object.fromEntries(dataNote);
 
-    //Actualizar datos de la nota
-    await fetch(`http://localhost:3000/home/edit/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ title, description }),
-    });
-    navigate("/home");
+    if (!title) return console.log("El titulo es requerido");
+
+    try {
+      //Actualizar datos de la nota
+      await fetch(`http://localhost:3000/api/notes/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ title, description }),
+      });
+      navigate("/notes");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <>
-      <NavBar />
+      <NavBar>
+        <div>
+          <li>
+            <h1 style={{ color: "white" }}>Actualizando nota de {localStorage.getItem('userName')}</h1>
+          </li>
+        </div>
+        <li>
+          <Link
+            to="/auth/signin"
+            onClick={() => {localStorage.removeItem("token");localStorage.removeItem("userName")}}
+          >
+          </Link>
+        </li>
+      </NavBar>
 
       <form className="editContainer" onSubmit={handleSubmit}>
         <input
           type="text"
           name="title"
-          value={formData.title}
+          value={dataNote.title}
           onChange={handleChange}
         />
 
@@ -64,7 +74,7 @@ function HomeEdit() {
           name="description"
           cols="20"
           rows="13"
-          value={formData.description}
+          value={dataNote.description}
           onChange={handleChange}
         />
 
@@ -72,7 +82,7 @@ function HomeEdit() {
           <button
             type="button"
             className="button-77 delete"
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/notes")}
           >
             Cancelar
           </button>

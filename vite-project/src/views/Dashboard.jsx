@@ -1,74 +1,48 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { format } from "timeago.js";
+import { BiLogOut } from "react-icons/bi";
+
+//Componentes
 import Notes from "../components/Notes";
 import NavBar from "../components/NavBar";
-import { Link, useNavigate } from "react-router-dom";
+import Message from "../components/errorMessage";
+
+//Hooks
+import useCrudNotes from "../hooks/useCrudNotes";
+
 import "../css/formNotes.css";
-import { format } from "timeago.js";
 
 function Dashboard() {
-  const [users, setUsers] = useState(null);
-  const navigate = useNavigate();
 
-  const fetcher = async () => {
-    const response = await fetch("http://localhost:3000/home", {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    const jsonData = await response.json();
-
-    setUsers(jsonData);
-
-    if (jsonData.status === 401) return navigate("/auth/signin");
-  };
+  const { notes, loading, errorMessage, showNotes, deleteNote, createNote } = useCrudNotes();
 
   useEffect(() => {
-    fetcher();
+    showNotes();
   }, []);
-
-  const createNote = async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.target);
-    const { title, description } = Object.fromEntries(formData);
-
-    const response = await fetch("http://localhost:3000/home", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ title, description }),
-    });
-
-    const newNote = await response.json();
-
-    //Añadiendo los nuevos datos de la nota
-    setUsers((prevUsers) => {
-      return prevUsers ? [...prevUsers, newNote] : [newNote];
-    });
-    fetcher();
-  };
-
-  const deleteNote = async (id) => {
-    console.log(id, "dentro de deletenote");
-    await fetch(`http://localhost:3000/home/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    setUsers((prevUsers) => {
-      return prevUsers.filter((note) => note.id !== id);
-    });
-  };
 
   return (
     <>
-      <NavBar />
+      <NavBar>
+        <div>
+          <li>
+            <h1 style={{ color: "white" }}>
+              Bienvenido(a), {localStorage.getItem("userName")}
+            </h1>
+          </li>
+        </div>
+        <li>
+          <Link
+            to="/auth/signin"
+            onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("userName");
+            }}
+          >
+            <BiLogOut />
+          </Link>
+        </li>
+      </NavBar>
 
       <div className="dasContainer">
         <form className="formDB" onSubmit={createNote}>
@@ -76,16 +50,43 @@ function Dashboard() {
 
           <input type="text" name="title" placeholder="Titulo" />
 
-          <textarea name="description" id="" cols="20" rows="8" placeholder="Descripcion"></textarea>
+          <textarea
+            name="description"
+            id=""
+            cols="20"
+            rows="8"
+            placeholder="Descripcion"
+          ></textarea>
 
           <button type="submit" className="bn9">
-            <span>Create Note</span>
+            
+            {loading.create ? (
+
+              <div className="loading-circle-container">
+                <div className="loading-circle"></div>
+              </div>
+
+            ) : (
+
+              <span>Create Note</span>
+            )}
+
           </button>
+
+          {errorMessage.show ? <Message message={errorMessage.error} /> : null}
         </form>
 
         <div className="notesContainer">
-          {users &&
-            users.map(({ title, description, id, created_at }, index) => {
+
+          {loading.show ? (
+
+            <div className="loading-circle-container show">
+              <div className="loading-circle"></div>
+            </div>
+
+          ) : (
+
+           notes && notes.map(({ title, description, id, created_at }, index) => {
               return (
                 <Notes
                   key={index}
@@ -94,21 +95,27 @@ function Dashboard() {
                   description={description}
                   date={format(created_at)}
                 >
-                  <Link to={`/home/edit/${id}`}>
-                    <button className="button-77">
-                      Editar
-                    </button>
+                  <Link to={"/notes/edit"} state={{ notes, id }}>
+                    <button className="button-77">Editar</button>
                   </Link>
 
                   <button
                     className="button-77 delete"
                     onClick={() => deleteNote(id)}
+                    disabled={loading.delete[id]}
                   >
-                    Eliminar
+                    {loading.delete === id ? (
+                      <div className="loading-circle-container deleteButtonContainer">
+                        <div className="loading-circle deleteButton"></div>
+                      </div>
+                    ) : (
+                      <>Eliminar</>
+                    )}
                   </button>
                 </Notes>
               );
-            })}
+            })
+          )}
         </div>
       </div>
     </>

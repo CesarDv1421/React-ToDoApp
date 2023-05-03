@@ -11,11 +11,7 @@
 
 body {
   background-image: url("../public/BackgroundBlue.png");
-  background-size:cover;
-}
-
-.logoCode {
-  width: 50px;
+  background-size: cover;
 }
 
 .navContainer {
@@ -30,7 +26,13 @@ body {
   align-items: center;
 }
 
+.logoCode {
+  display: flex;
+  width: 50px;
+}
+
 .navContainer > div {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -39,4 +41,18 @@ body {
 
 a {
   color: white;
+}
+
+.message {
+  background-color: #fff;
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(242, 5, 5, 0.667);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.message.show {
+  opacity: 1;
 }
